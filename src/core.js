@@ -125,35 +125,29 @@ $.fn.powerTip = function(opts, arg) {
 
 	// attach events to matched elements if the manual option is not enabled
 	if (!options.manual) {
-		// attach open events
-		$.each(options.openEvents, function(idx, evt) {
-			if ($.inArray(evt, options.closeEvents) > -1) {
-				// event is in both openEvents and closeEvents, so toggle it
-				targetElements.on(evt + EVENT_NAMESPACE, function elementToggle(event) {
+		// Combine open/close/keydown events into a single list
+		var eventList = options.openEvents.concat(options.closeEvents, ['keydown']);
+		// Combine event list into a deduplicated, namespaced string to use as selector
+		eventList = eventList.filter(function (value, index, self) {
+			return self.indexOf(value) === index;
+		}).map(function (v) {
+			return v + EVENT_NAMESPACE;
+		}).join(' ');
+
+		targetElements.on(eventList, function elementEvent(event) {
+			if ($.inArray(event.type, options.openEvents) > -1) {
+				if ($.inArray(event.type, options.closeEvents) > -1) {
 					$.powerTip.toggle(this, event);
-				});
-			} else {
-				targetElements.on(evt + EVENT_NAMESPACE, function elementOpen(event) {
+				} else {
 					$.powerTip.show(this, event);
-				});
-			}
-		});
-
-		// attach close events
-		$.each(options.closeEvents, function(idx, evt) {
-			if ($.inArray(evt, options.openEvents) < 0) {
-				targetElements.on(evt + EVENT_NAMESPACE, function elementClose(event) {
-					// set immediate to true for any event without mouse info
-					$.powerTip.hide(this, !isMouseEvent(event));
-				});
-			}
-		});
-
-		// attach escape key close event
-		targetElements.on('keydown' + EVENT_NAMESPACE, function elementKeyDown(event) {
-			// always close tooltip when the escape key is pressed
-			if (event.keyCode === 27) {
-				$.powerTip.hide(this, true);
+				}
+			} else if ($.inArray(event.type, options.closeEvents) > -1) {
+				$.powerTip.hide(this, event);
+			} else {
+				// always close tooltip when the escape key is pressed
+				if (event.keyCode === 27) {
+					$.powerTip.hide(this, true);
+				}
 			}
 		});
 	}
