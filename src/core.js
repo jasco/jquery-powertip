@@ -137,12 +137,14 @@ $.fn.powerTip = function(opts, arg) {
 		targetElements.on(eventList, function elementEvent(event) {
 			if ($.inArray(event.type, options.openEvents) > -1) {
 				if ($.inArray(event.type, options.closeEvents) > -1) {
+					// event is in both openEvents and closeEvents, so toggle it
 					$.powerTip.toggle(this, event);
 				} else {
 					$.powerTip.show(this, event);
 				}
 			} else if ($.inArray(event.type, options.closeEvents) > -1) {
-				$.powerTip.hide(this, event);
+				// set immediate to true for any event without mouse info
+				$.powerTip.hide(this, !isMouseEvent(event));
 			} else {
 				// always close tooltip when the escape key is pressed
 				if (event.keyCode === 27) {
