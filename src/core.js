@@ -126,11 +126,11 @@ $.fn.powerTip = function(opts, arg) {
 	// attach events to matched elements if the manual option is not enabled
 	if (!options.manual) {
 		// Combine open/close/keydown events into a single list
-		var eventList = options.openEvents.concat(options.closeEvents, ['keydown']);
+		var eventList = options.openEvents.concat(options.closeEvents, [ 'keydown' ]);
 		// Combine event list into a deduplicated, namespaced string to use as selector
-		eventList = eventList.filter(function (value, index, self) {
+		eventList = eventList.filter(function eventFilter(value, index, self) {
 			return self.indexOf(value) === index;
-		}).map(function (v) {
+		}).map(function eventMap(v) {
 			return v + EVENT_NAMESPACE;
 		}).join(' ');
 
