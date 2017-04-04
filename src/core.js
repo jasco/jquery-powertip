@@ -182,6 +182,7 @@ $.fn.powerTip = function(opts, arg) {
 // Specialty function for lightweight incremental binding
 $.fn.powerTipInit = function(opts) {
 	var options = $.extend({}, $.fn.powerTip.defaults, opts);
+	activateChromeZoomedOffsetPatch();
 	// hook mouse and viewport dimension tracking
 	initTracking();
 	return new TooltipController(options);
