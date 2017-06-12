@@ -58,9 +58,8 @@ function initTracking() {
 function getViewportDimensions() {
 	session.scrollLeft = $window.scrollLeft();
 	session.scrollTop = $window.scrollTop();
-	session.windowWidth = $window.width();
-	session.windowHeight = $window.height();
-	session.positionCompensation = computePositionCompensation(session.windowWidth, session.windowHeight);
+
+	trackResize();
 }
 
 /**
@@ -68,8 +67,15 @@ function getViewportDimensions() {
  * @private
  */
 function trackResize() {
-	session.windowWidth = $window.width();
-	session.windowHeight = $window.height();
+	// When in quirks mode, because doctype missing or referencing older
+	// html standard, jquery does not report viewport size properly
+	if (document.compatMode === 'BackCompat') {
+		session.windowWidth = document.body.clientWidth;
+		session.windowHeight = document.body.clientHeight;
+	} else {
+		session.windowWidth = $window.width();
+		session.windowHeight = $window.height();
+	}
 	session.positionCompensation = computePositionCompensation(session.windowWidth, session.windowHeight);
 }
 
