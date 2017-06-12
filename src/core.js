@@ -179,6 +179,26 @@ $.fn.powerTip = function(opts, arg) {
 	return targetElements;
 };
 
+// Specialty function for lightweight incremental binding
+$.fn.powerTipInit = function(opts) {
+	var options = $.extend({}, $.fn.powerTip.defaults, opts);
+	// hook mouse and viewport dimension tracking
+	initTracking();
+	return new TooltipController(options);
+};
+
+// Specialty function for lightweight incremental binding
+// Note that we do not deal with multiple bindings on same element
+// neither do we save to session.elements which means that powertip
+// removed is not supported.
+$.fn.powerTipPrepNode = function(tipController, opts) {
+	var options = $.extend({}, $.fn.powerTip.defaults, opts);
+	this.data(
+		DATA_DISPLAYCONTROLLER,
+		new DisplayController(this, options, tipController)
+	);
+};
+
 /**
  * Default options for the powerTip plugin.
  */
