@@ -61,7 +61,8 @@ var session = {
 	windowWidth: 0,
 	windowHeight: 0,
 	scrollTop: 0,
-	scrollLeft: 0
+	scrollLeft: 0,
+	chromePatchRefElement: null
 };
 
 /**
@@ -97,6 +98,8 @@ $.fn.powerTip = function(opts, arg) {
 	if ($.type(opts) === 'string' && $.powerTip[opts]) {
 		return $.powerTip[opts].call(targetElements, targetElements, arg);
 	}
+
+	activateChromeZoomedOffsetPatch();
 
 	// extend options
 	options = $.extend({}, $.fn.powerTip.defaults, opts);

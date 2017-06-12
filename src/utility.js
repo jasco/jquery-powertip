@@ -111,7 +111,7 @@ function isMouseOver(element) {
 	// methods do not work with SVG elements
 	// compute width/height because those properties do not exist on the object
 	// returned by getBoundingClientRect() in older versions of IE
-	var elementPosition = element.offset(),
+	var elementPosition = getCompensatedOffset(element),
 		elementBox = element[0].getBoundingClientRect(),
 		elementWidth = elementBox.right - elementBox.left,
 		elementHeight = elementBox.bottom - elementBox.top;
@@ -258,4 +258,49 @@ function computePositionCompensation(windowWidth, windowHeight) {
 	}
 
 	return offsets;
+}
+
+/**
+ * Conditionally make reference for Chrome zoomed offset patch
+ *
+ * Reference https://bugs.chromium.org/p/chromium/issues/detail?id=489206
+ * Suggested patch calls for inserting an absolutely positioned element at 0,0.
+ * However, it appears that document.body serves equally well as a references
+ * and avoid needing to manipulate DOM. Beware offset behavior when body is not
+ * positioned at 0,0.
+ */
+function activateChromeZoomedOffsetPatch() {
+	var style;
+	if (!session.chromePatchRefElement && /Chrome\/[.0-9]*/.test(navigator.userAgent)) {
+		session.chromePatchRefElement = $(document.body);
+		style = {
+			top: 0,
+			left: 0,
+			position: 'absolute',
+			display: 'hidden',
+			height: '1px',
+			margin: 0,
+			width: '1px',
+			zIndex: -1
+		};
+		session.chromePatchRefElement = $('<div/>').css(style).appendTo($(document.body));
+	}
+}
+
+/**
+ * Compensate for the Chrome getBoundingClientRect bug when zoomed.
+ * Reference https://bugs.chromium.org/p/chromium/issues/detail?id=489206
+ * @param {jQuery} element The element that the tooltip should target.
+ * @return {Offsets} The top, left offsets relative to the document.
+ */
+function getCompensatedOffset(element) {
+	if (session.chromePatchRefElement) {
+		var offset = element.offset();
+		var r = session.chromePatchRefElement.offset();
+		return {
+			left: offset.left - r.left,
+			top: offset.top - r.top
+		};
+	}
+	return element.offset();
 }
