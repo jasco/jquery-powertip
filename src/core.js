@@ -62,7 +62,8 @@ var session = {
 	windowHeight: 0,
 	scrollTop: 0,
 	scrollLeft: 0,
-	chromePatchRefElement: null
+	chromePatchRefElement: null,
+	positionCompensation: { top: 0, bottom: 0, left: 0, right: 0 }
 };
 
 /**
