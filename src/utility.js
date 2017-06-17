@@ -322,10 +322,15 @@ function getCompensatedOffset(element) {
  */
 function compensateForZoomBug(coords) {
 	if (session.chromePatchRefElement) {
-		var r = session.chromePatchRefElement.offset();
-		coords.top -= r.top;
-		coords.left -= r.left;
-		return coords;
+		if (!isPositionNotStatic($body) && !isPositionNotStatic($html)) {
+			var r = session.chromePatchRefElement.offset();
+			coords.top -= r.top;
+			coords.left -= r.left;
+			return coords;
+		} else {
+			// Can this be made to update more selectively?  The varying value not yet identified.
+			trackResize();
+		}
 	}
 	return coords;
 }
