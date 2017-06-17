@@ -35,6 +35,9 @@ function PlacementCalculator() {
 			position = getHtmlPlacement(element, placementBase);
 		}
 
+		// Adjust computed position if needed
+		position = compensateForZoomBug(position);
+
 		// calculate the appropriate x and y position in the document
 		switch (placement) {
 			case 'n':
@@ -99,7 +102,7 @@ function PlacementCalculator() {
 	 * @return {Object} An object with the top,left position values.
 	 */
 	function getHtmlPlacement(element, placement) {
-		var objectOffset = getCompensatedOffset(element),
+		var objectOffset = element.offset(),
 			objectWidth = element.outerWidth(),
 			objectHeight = element.outerHeight(),
 			left,
@@ -217,10 +220,10 @@ function PlacementCalculator() {
 			}
 		}
 
-		return compensateForZoomBug({
+		return {
 			top: coords.y + session.scrollTop,
 			left: coords.x + session.scrollLeft
-		});
+		};
 	}
 
 	// expose methods
