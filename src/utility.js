@@ -117,7 +117,7 @@ function isMouseOver(element) {
 	// methods do not work with SVG elements
 	// compute width/height because those properties do not exist on the object
 	// returned by getBoundingClientRect() in older versions of IE
-	var elementPosition = getCompensatedOffset(element),
+	var elementPosition = compensateForZoomBug(element.offset()),
 		elementBox = element[0].getBoundingClientRect(),
 		elementWidth = elementBox.right - elementBox.left,
 		elementHeight = elementBox.bottom - elementBox.top;
@@ -306,19 +306,10 @@ function activateChromeZoomedOffsetPatch() {
 }
 
 /**
- * Compensate for the Chrome getBoundingClientRect bug when zoomed.
- * Reference https://bugs.chromium.org/p/chromium/issues/detail?id=489206
- * @param {jQuery} element The element that the tooltip should target.
- * @return {Offsets} The top, left offsets relative to the document.
- */
-function getCompensatedOffset(element) {
-	return compensateForZoomBug(element.offset());
-}
-
-/**
  * Compensate for the Chrome measurement bug when zoomed.
- * @param {object} coords Coordinates to compensate for if zoomed on chrome
- * @return {Offsets} The top, left offsets relative to the document.
+ * Reference https://bugs.chromium.org/p/chromium/issues/detail?id=489206
+ * @param {object} coords Placement coordinates to compensate for if zoomed on chrome
+ * @return {Offsets} The updated top, left offsets relative to the document origin.
  */
 function compensateForZoomBug(coords) {
 	if (session.chromePatchRefElement) {
