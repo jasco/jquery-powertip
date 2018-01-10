@@ -15,14 +15,22 @@
 function CSSCoordinates() {
 	var me = this;
 
-	function compensated(val, comp) {
-		return val === 'auto' ? val : val - comp;
+	/**
+	 * Return value the compensated value allowing for the special value of 'auto'.
+	 * @private
+	 * @param {number} value The value to be compensated.
+	 * @param {number} comp The amount by which the value should be adjusted.
+	 * @returns {number} The value less comp unless 'auto'
+	 */
+	function compensated(value, comp) {
+		return value === 'auto' ? value : value - comp;
 	}
 
 	/**
 	 * Return positioned element's origin with respect to the viewport home
 	 * @private
 	 * @param {object} el The positioned element to measure
+	 * @returns {object} The top and left coordinates of the element relative to the viewport.
 	 */
 	function positionedParentViewportHomeOffset(el) {
 		var originX = el[0].getBoundingClientRect().left,
