@@ -236,10 +236,11 @@ function activateChromeZoomedOffsetPatch() {
  * @return {Offsets} The updated top, left offsets relative to the document origin.
  */
 function compensateForZoomBug(coords) {
+	var ref;
 	if (session.chromePatchRefElement) {
-		var r = session.chromePatchRefElement.offset();
-		coords.top -= r.top;
-		coords.left -= r.left;
+		ref = session.chromePatchRefElement.offset();
+		coords.top -= ref.top;
+		coords.left -= ref.left;
 		return coords;
 	}
 	return coords;
