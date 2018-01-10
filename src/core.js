@@ -363,6 +363,14 @@ $.powerTip = {
 		}
 
 		return element;
+	},
+
+	/**
+	 * Check whether powerTip is currently open.
+	 * @return {boolean} True if powerTip is currently open.
+	 */
+	isOpen: function isPowerTipOpen() {
+		return session.isTipOpen;
 	}
 };
 
