@@ -312,11 +312,12 @@ function activateChromeZoomedOffsetPatch() {
  * @return {Offsets} The updated top, left offsets relative to the document origin.
  */
 function compensateForZoomBug(coords) {
+	var ref;
 	if (session.chromePatchRefElement) {
 		if (!isPositionNotStatic($body) && !isPositionNotStatic($html)) {
-			var r = session.chromePatchRefElement.offset();
-			coords.top -= r.top;
-			coords.left -= r.left;
+			ref = session.chromePatchRefElement.offset();
+			coords.top -= ref.top;
+			coords.left -= ref.left;
 			return coords;
 		} else {
 			// Can this be made to update more selectively?  The varying value not yet identified.
