@@ -109,7 +109,9 @@ function TooltipController(options) {
 		tipElement.addClass(options.popupClass);
 
 		// set tooltip position
-		if (!options.followMouse) {
+		// revert to static placement when the "force open" flag was set because
+		// that flag means that we do not have accurate mouse position info
+		if (!options.followMouse || element.data(DATA_FORCEDOPEN)) {
 			positionTipOnElement(element);
 			session.isFixedTipOpen = true;
 		} else {
@@ -119,7 +121,9 @@ function TooltipController(options) {
 		// close tooltip when clicking anywhere on the page, with the exception
 		// of the tooltip's trigger element and any elements that are within a
 		// tooltip that has 'mouseOnToPopup' option enabled
-		if (!element.data(DATA_FORCEDOPEN)) {
+		// always enable this feature when the "force open" flag is set on a
+		// followMouse tooltip because we reverted to static placement above
+		if (!element.data(DATA_FORCEDOPEN) && !options.followMouse) {
 			$document.on('click' + EVENT_NAMESPACE, function documentClick(event) {
 				var target = event.target;
 				if (target !== element[0]) {
@@ -216,6 +220,12 @@ function TooltipController(options) {
 	 * @private
 	 */
 	function positionTipOnCursor() {
+		var tipWidth,
+			tipHeight,
+			coords,
+			collisions,
+			collisionCount;
+
 		// to support having fixed tooltips on the same page as cursor tooltips,
 		// where both instances are referencing the same tooltip element, we
 		// need to keep track of the mouse position constantly, but we should
@@ -224,11 +234,9 @@ function TooltipController(options) {
 		// have a mouse-follow using it.
 		if (!session.isFixedTipOpen && (session.isTipOpen || (session.tipOpenImminent && tipElement.data(DATA_HASMOUSEMOVE)))) {
 			// grab measurements
-			var tipWidth = tipElement.outerWidth(),
-				tipHeight = tipElement.outerHeight(),
-				coords = new CSSCoordinates(),
-				collisions,
-				collisionCount;
+			tipWidth = tipElement.outerWidth();
+			tipHeight = tipElement.outerHeight();
+			coords = new CSSCoordinates();
 
 			// grab collisions
 			coords.set('top', session.currentY + options.offset);
@@ -246,7 +254,7 @@ function TooltipController(options) {
 					// if there is only one collision (bottom or right) then
 					// simply constrain the tooltip to the view port
 					if (collisions === Collision.right) {
-						coords.set('left', session.windowWidth - tipWidth);
+						coords.set('left', session.scrollLeft + session.windowWidth - tipWidth);
 					} else if (collisions === Collision.bottom) {
 						coords.set('top', session.scrollTop + session.windowHeight - tipHeight);
 					}
@@ -274,7 +282,10 @@ function TooltipController(options) {
 		var priorityList,
 			finalPlacement;
 
-		if (options.smartPlacement) {
+		// when the followMouse option is enabled and the "force open" flag is
+		// set we revert to static positioning. since the developer may not have
+		// considered this scenario we should use smart placement
+		if (options.smartPlacement || (options.followMouse && element.data(DATA_FORCEDOPEN))) {
 			priorityList = $.fn.powerTip.smartPlacementLists[options.placement];
 
 			// iterate over the priority list and use the first placement option
@@ -360,18 +371,25 @@ function TooltipController(options) {
 	 * @private
 	 */
 	function closeDesyncedTip() {
-		var isDesynced = false;
+		var isDesynced = false,
+			hasDesyncableCloseEvent = $.grep(
+				[ 'mouseleave', 'mouseout', 'blur', 'focusout' ],
+				function(eventType) {
+					return $.inArray(options.closeEvents, eventType) !== -1;
+				}
+			).length > 0;
+
 		// It is possible for the mouse cursor to leave an element without
 		// firing the mouseleave or blur event. This most commonly happens when
 		// the element is disabled under mouse cursor. If this happens it will
 		// result in a desynced tooltip because the tooltip was never asked to
 		// close. So we should periodically check for a desync situation and
 		// close the tip if such a situation arises.
-		if (session.isTipOpen && !session.isClosing && !session.delayInProgress && ($.inArray('mouseleave', options.closeEvents) > -1 || $.inArray('mouseout', options.closeEvents) > -1 || $.inArray('blur', options.closeEvents) > -1 || $.inArray('focusout', options.closeEvents) > -1)) {
-			// user moused onto another tip or active hover is disabled
+		if (session.isTipOpen && !session.isClosing && !session.delayInProgress && hasDesyncableCloseEvent) {
 			if (session.activeHover.data(DATA_HASACTIVEHOVER) === false || session.activeHover.is(':disabled')) {
+				// user moused onto another tip or active hover is disabled
 				isDesynced = true;
-			} else {
+			} else if (!isMouseOver(session.activeHover) && !session.activeHover.is(':focus') && !session.activeHover.data(DATA_FORCEDOPEN)) {
 				// hanging tip - have to test if mouse position is not over the
 				// active hover and not over a tooltip set to let the user
 				// interact with it.
@@ -379,14 +397,12 @@ function TooltipController(options) {
 				// not have focus.
 				// for tooltips opened via the api: we need to check if it has
 				// the forcedOpen flag.
-				if (!isMouseOver(session.activeHover) && !session.activeHover.is(':focus') && !session.activeHover.data(DATA_FORCEDOPEN)) {
-					if (tipElement.data(DATA_MOUSEONTOTIP)) {
-						if (!isMouseOver(tipElement)) {
-							isDesynced = true;
-						}
-					} else {
+				if (tipElement.data(DATA_MOUSEONTOTIP)) {
+					if (!isMouseOver(tipElement)) {
 						isDesynced = true;
 					}
+				} else {
+					isDesynced = true;
 				}
 			}
 

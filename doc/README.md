@@ -113,7 +113,7 @@ require.config({
 });
 ```
 
-The PowerTip API will be loaded into jQuery as well as returned to the PowerTip parameter in your `define()` (`query.powertip` in the example above).
+The PowerTip API will be loaded into jQuery as well as returned to the PowerTip parameter in your `define()` (`jquery.powertip` in the example above).
 
 **Important notes:**
 
@@ -130,7 +130,7 @@ $('.tooltips').powerTip(options);
 
 Where `options` is an object with the various settings you want to override (all defined below).
 
-For example, if you want to attach tootips to all elements with the "info" class, and have those tooltip appear above and to the right of those elements you would use the following code:
+For example, if you want to attach tooltips to all elements with the "info" class, and have those tooltip appear above and to the right of those elements you would use the following code:
 
 ```javascript
 $('.info').powerTip({
@@ -140,7 +140,7 @@ $('.info').powerTip({
 
 ### Setting tooltip content
 
-Generally, if your tooltips are just plain text then you probably want to set your tooltip text with the HTML title attribute on the elements themselves. This approach is very intuitive and backwards compatible. But there are several ways to specify the content.
+Generally, if your tooltips are just plain text then you probably want to set your tooltip text with the HTML `title` attribute on the elements themselves. This approach is very intuitive and backwards compatible. But there are several ways to specify the content.
 
 #### Title attribute
 
@@ -152,7 +152,7 @@ The simplest method, as well as the only one that will continue to work for user
 
 #### data-powertip
 
-Basically the same as setting the title attribute, but using an HTML5 data attribute. You can set this in the markup or with JavaScript at any time. It only accepts a simple string, but that string can contain markup. This will also accept a function that returns a string.
+Basically the same as setting the `title` attribute, but using an HTML5 [custom data attribute](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/data-*). You can set this in the markup or with JavaScript at any time. It only accepts a simple string, but that string can contain markup. This will also accept a function that returns a string.
 
 ```javascript
 $('#element').data('powertip', 'This will be the <b>tooltip text</b>.');
@@ -211,7 +211,7 @@ $('#element').data('powertiptarget', 'myToolTip');
 
 ### Changing the tooltip content
 
-After you invoke `powerTip()` on an element the title attribute will be deleted and the HTML data attributes will be cached internally by jQuery. This means that if you want to change the tooltip for any element that you have already run PowerTip on then you must use the `.data()` method provided by jQuery. Changing the markup attributes will have no effect.
+After you invoke `powerTip()` on an element the `title` attribute will be deleted and the HTML data attributes will be cached internally by jQuery. This means that if you want to change the tooltip for any element that you have already run PowerTip on then you must use the `.data()` method provided by jQuery. Changing the markup attributes will have no effect.
 
 Tooltips that are created using the HTML `title` attribute will have their content saved as "powertip" in the data collection. If you want to change the content of a tooltip after setting it with the `title` attribute then you must change the "powertip" data attribute.
 
@@ -260,7 +260,7 @@ Of course those defaults will be overridden with any options you pass directly t
 
 | Name | Type | Description |
 | ----- | ----- | ----- |
-| `followMouse` | Boolean | (default: `false`) If set to `true` the tooltip will follow the users mouse cursor. |
+| `followMouse` | Boolean | (default: `false`) If set to `true` the tooltip will follow the users mouse cursor. Note that if a toolip with `followMouse` enabled is opened by an event without mouse data (like "focus" via keyboard navigation) then it will revert to static placement with smart positioning enabled. So you may wish to set `placement` as well. |
 | `mouseOnToPopup` | Boolean | (default: `false`) Allow the mouse to hover on the tooltip. This lets users interact with the content in the tooltip. Only applies if `followMouse` is set to `false` and `manual` is set to `false`. |
 | `placement` | String | (default: `'n'`) Placement location of the tooltip relative to the element it is open for. Values can be `n`, `e`, `s`, `w`, `nw`, `ne`, `sw`, `se`, `nw-alt`, `ne-alt`, `sw-alt`, or `se-alt` (as in north, east, south, and west). This only matters if `followMouse` is set to `false`. |
 | `smartPlacement` | Boolean | (default: `false`) When enabled the plugin will try to keep tips inside the browser view port. If a tooltip would extend outside of the view port then its placement will be changed to an orientation that would be entirely within the current view port. Only applies if `followMouse` is set to `false`. |

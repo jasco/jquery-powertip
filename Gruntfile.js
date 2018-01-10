@@ -23,42 +23,13 @@ module.exports = function(grunt) {
 			license: 'LICENSE.txt',
 			changelog: 'CHANGELOG.yml'
 		},
-		banner: [
-			'/*!',
-			' <%= pkg.title %> v<%= pkg.version %> (<%= grunt.template.today("yyyy-mm-dd") %>)',
-			' <%= pkg.homepage %>',
-			' Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author.name %> (<%= pkg.author.url %>).',
-			' Released under <%= pkg.license %> license.',
-			' https://raw.github.com/stevenbenner/jquery-powertip/master/<%= files.license %>',
-			'*/\n'
-		].join('\n'),
 		clean: {
 			dist: [ '<%= paths.build %>' ],
 			temp: [ '<%= paths.temp %>' ]
 		},
-		jshint: {
-			grunt: {
-				src: [ 'Gruntfile.js' ],
-				options: {
-					jshintrc: '.jshintrc'
-				}
-			},
-			tests: {
-				src: [ 'test/**/*.js' ],
-				options: {
-					jshintrc: 'test/.jshintrc'
-				}
-			},
-			dist: {
-				src: [ '<%= paths.build %>/<%= files.cat %>' ],
-				options: {
-					jshintrc: 'src/.jshintrc'
-				}
-			}
-		},
-		jscs: {
+		eslint: {
 			options: {
-				config: '.jscsrc'
+				format: 'codeframe'
 			},
 			grunt: {
 				src: [ 'Gruntfile.js' ]
@@ -67,16 +38,18 @@ module.exports = function(grunt) {
 				src: [ 'test/**/*.js' ]
 			},
 			js: {
-				src: [ 'src/*.js' ]
+				options: {
+					configFile: 'src/.eslintrc.json'
+				},
+				src: [ '<%= paths.build %>/<%= files.cat %>' ]
 			}
 		},
 		jsonlint: {
 			project: {
 				src: [
 					'package.json',
-					'.jscsrc',
-					'.jshintrc',
-					'{src,test}/.jshintrc'
+					'.eslintrc.json',
+					'{src,test}/.eslintrc.json'
 				]
 			}
 		},
@@ -94,19 +67,6 @@ module.exports = function(grunt) {
 					'src/utility.js'
 				],
 				dest: '<%= paths.temp %>/core.js',
-				nonull: true
-			},
-			dist: {
-				src: [
-					'src/intro.js',
-					'<%= concat.core.dest %>',
-					'src/outro.js'
-				],
-				dest: '<%= paths.build %>/<%= files.cat %>',
-				options: {
-					banner: '<%= banner %>',
-					separator: ''
-				},
 				nonull: true
 			}
 		},
@@ -137,13 +97,26 @@ module.exports = function(grunt) {
 				src: [ '<%= paths.build %>/<%= files.cat %>' ],
 				dest: '<%= paths.build %>/<%= files.min %>',
 				options: {
-					banner: '<%= banner %>',
+					output: {
+						comments: /^!/
+					},
 					report: 'gzip',
 					ie8: true
 				}
 			}
 		},
 		copy: {
+			dist: {
+				src: [ 'src/wrapper.js' ],
+				dest: '<%= paths.build %>/<%= files.cat %>',
+				options: {
+					process: function(content) {
+						let replaceRegex = /\s\/\* \[POWERTIP CODE\] \*\//,
+							coreFile = grunt.file.read(grunt.template.process('<%= concat.core.dest %>'));
+						return grunt.template.process(content).replace(replaceRegex, coreFile);
+					}
+				}
+			},
 			css: {
 				src: [ 'css/*.css' ],
 				dest: '<%= paths.build %>/'
@@ -277,10 +250,10 @@ module.exports = function(grunt) {
 
 	// register grunt tasks
 	grunt.registerTask('default', [ 'test' ]);
-	grunt.registerTask('test', [ 'jsonlint', 'concat:core', 'indent', 'concat:dist', 'jshint', 'jscs', 'qunit:tests', 'test:browserify', 'csslint', 'clean:temp' ]);
+	grunt.registerTask('test', [ 'jsonlint', 'concat:core', 'indent', 'copy:dist', 'eslint', 'qunit:tests', 'test:browserify', 'csslint', 'clean:temp' ]);
 	grunt.registerTask('test:browserify', [ 'copy:browserify', 'browserify', 'qunit:browserify' ]);
 	grunt.registerTask('build', [ 'jsonlint', 'build:js', 'build:css' ]);
-	grunt.registerTask('build:js', [ 'concat:core', 'indent', 'concat:dist', 'jshint', 'jscs', 'qunit:tests', 'test:browserify', 'uglify', 'clean:temp' ]);
+	grunt.registerTask('build:js', [ 'concat:core', 'indent', 'copy:dist', 'eslint', 'qunit:tests', 'test:browserify', 'uglify', 'clean:temp' ]);
 	grunt.registerTask('build:css', [ 'csslint', 'copy:css', 'cssmin' ]);
 	grunt.registerTask('build:docs', [ 'copy:examples', 'copy:license', 'copy:changelog' ]);
 	grunt.registerTask('build:release', [ 'clean:dist', 'build', 'build:docs', 'compress' ]);

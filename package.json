@@ -31,23 +31,23 @@
 		"jquery": ">=1.7 <4.0"
 	},
 	"devDependencies": {
+		"@stevenbenner/eslint-config": "~1.0",
 		"grunt": "~1.0",
-		"grunt-browserify": "~5.0",
+		"grunt-browserify": "~5.2",
 		"grunt-contrib-clean": "~1.1",
 		"grunt-contrib-compress": "~1.4",
 		"grunt-contrib-concat": "~1.0",
 		"grunt-contrib-copy": "~1.0",
 		"grunt-contrib-csslint": "~2.0",
 		"grunt-contrib-cssmin": "~2.2",
-		"grunt-contrib-jshint": "~1.1",
 		"grunt-contrib-qunit": "~2.0",
-		"grunt-contrib-uglify": "~3.0",
+		"grunt-contrib-uglify": "~3.3",
+		"grunt-eslint": "~20.1",
 		"grunt-indent": "~1.0",
-		"grunt-jscs": "3.0",
 		"grunt-jsonlint": "~1.1",
 		"grunt-shell": "~2.1",
 		"jit-grunt": "~0.10",
-		"qunitjs": "~2.3",
+		"qunitjs": "~2.4",
 		"time-grunt": "~1.4"
 	},
 	"scripts": {
