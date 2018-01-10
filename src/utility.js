@@ -319,10 +319,11 @@ function compensateForZoomBug(coords) {
 			coords.top -= ref.top;
 			coords.left -= ref.left;
 			return coords;
-		} else {
-			// Can this be made to update more selectively?  The varying value not yet identified.
-			trackResize();
 		}
+
+		// Refresh the cached window size in case resized.
+		// Can this be made to update more selectively?  The varying value not yet identified.
+		trackResize();
 	}
 	return coords;
 }
