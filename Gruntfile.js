@@ -90,7 +90,12 @@ module.exports = function(grunt) {
 				'test/index.html',
 				'test/amd.html'
 			],
-			browserify: [ '<%= copy.browserify.dest %>' ]
+			browserify: [ '<%= copy.browserify.dest %>' ],
+			options: {
+				puppeteer: {
+					args: [ '--no-sandbox' ]
+				}
+			}
 		},
 		uglify: {
 			dist: {
@@ -110,7 +115,7 @@ module.exports = function(grunt) {
 				src: [ 'src/wrapper.js' ],
 				dest: '<%= paths.build %>/<%= files.cat %>',
 				options: {
-					process: function(content) {
+					process: (content) => {
 						let replaceRegex = /\s\/\* \[POWERTIP CODE\] \*\//,
 							coreFile = grunt.file.read(grunt.template.process('<%= concat.core.dest %>'));
 						return grunt.template.process(content).replace(replaceRegex, coreFile);
@@ -125,7 +130,7 @@ module.exports = function(grunt) {
 				src: [ 'examples/*' ],
 				dest: '<%= paths.build %>/',
 				options: {
-					process: function(content) {
+					process: (content) => {
 						let scriptsRegex = /<!-- begin-scripts -->(?:.*\r?\n\s)*<!-- end-scripts -->/,
 							builtScriptTag = '<script type="text/javascript" src="../<%= files.cat %>"></script>';
 						return content.replace(scriptsRegex, grunt.template.process(builtScriptTag));
@@ -185,9 +190,7 @@ module.exports = function(grunt) {
 						cwd: 'css/',
 						src: [ '*.css' ],
 						dest: '<%= paths.build %>/css/',
-						rename: function(dest, matchedSrcPath) {
-							return dest + matchedSrcPath.replace('.css', '.min.css');
-						}
+						rename: (dest, matchedSrcPath) => (dest + matchedSrcPath.replace('.css', '.min.css'))
 					}
 				],
 				options: {
@@ -233,7 +236,7 @@ module.exports = function(grunt) {
 	});
 
 	// custom task to build the gh-pages index.md file
-	grunt.registerTask('build:gh-pages', 'Create the gh-pages markdown.', function() {
+	grunt.registerTask('build:gh-pages', 'Create the gh-pages markdown.', () => {
 		let template = grunt.file.read('doc/gh-pages.template.md'),
 			data = {
 				pkg: grunt.file.readJSON('package.json'),
@@ -259,6 +262,7 @@ module.exports = function(grunt) {
 	grunt.registerTask('build:release', [ 'clean:dist', 'build', 'build:docs', 'compress' ]);
 	grunt.registerTask('build:npm', [ 'clean:dist', 'build' ]);
 	grunt.registerTask('travis', [ 'test' ]);
+	grunt.registerTask('deploy', [ 'deploy:docs', 'deploy:assets' ]);
 	grunt.registerTask('deploy:docs', [ 'build:gh-pages', 'shell:checkoutpages', 'copy:index', 'shell:addindex', 'shell:checkoutmaster' ]);
 	grunt.registerTask('deploy:assets', [ 'build:release', 'shell:checkoutpages', 'copy:jsassets', 'copy:cssassets', 'shell:addassets', 'shell:checkoutmaster' ]);
 };

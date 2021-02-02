@@ -4,7 +4,7 @@
 
 ## Version Format
 
-PowerTip uses [Semantic Versioning](http://semver.org/) and the version is in the format of [MAJOR].[MINOR].[PATCH]. Versioning is dictated by the exposed API that PowerTip users consume when using the plugin.
+PowerTip uses [Semantic Versioning](https://semver.org/) and the version is in the format of [MAJOR].[MINOR].[PATCH]. Versioning is dictated by the exposed API that PowerTip users consume when using the plugin.
 
 This includes anything in the following namespaces:
 
@@ -41,7 +41,7 @@ The events that fire during the tooltip life cycle are also considered to be par
 
 	`git tag -a vX.X.X -m "version X.X.X"`
 
-5. **Run `grunt deploy:docs && grunt deploy:assets`**
+5. **Run `grunt deploy`**
 
 	This will build the project page content, commit it to the gh-pages branch, and return to the master branch. It does not push any changes to the repo.
 

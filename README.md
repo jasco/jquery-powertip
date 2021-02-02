@@ -2,8 +2,8 @@
 
 PowerTip is a jQuery tooltip plugin with some advanced features like **hover intent testing**, **tooltip queueing**, and **support for complex data**. It also has that rarest of features in jQuery plugins, it's not abandonware.
 
-[![Build Status](https://travis-ci.org/stevenbenner/jquery-powertip.svg?branch=master)](https://travis-ci.org/stevenbenner/jquery-powertip)
-[![Release Version](https://img.shields.io/github/release/stevenbenner/jquery-powertip.svg)][projectpage]
+[![Build Status](https://img.shields.io/travis/stevenbenner/jquery-powertip/master.svg?style=flat-square)](https://travis-ci.org/stevenbenner/jquery-powertip)
+[![Release Version](https://img.shields.io/github/release/stevenbenner/jquery-powertip.svg?style=flat-square)][projectpage]
 
 ## Getting Started
 
@@ -49,7 +49,7 @@ These are general guidelines, not rules. I won't refuse a pull request just beca
 
 *(This project is released under the [MIT license](https://raw.github.com/stevenbenner/jquery-powertip/master/LICENSE.txt).)*
 
-Copyright (c) 2018 Steven Benner (http://stevenbenner.com/)
+Copyright (c) 2019 Steven Benner (https://stevenbenner.com/)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 

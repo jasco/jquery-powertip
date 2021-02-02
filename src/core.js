@@ -3,7 +3,7 @@
  *
  * @fileoverview  Core variables, plugin object, and API.
  * @link          https://stevenbenner.github.io/jquery-powertip/
- * @author        Steven Benner (http://stevenbenner.com/)
+ * @author        Steven Benner (https://stevenbenner.com/)
  * @requires      jQuery 1.7+
  */
 
@@ -401,5 +401,6 @@ $.powerTip = {
 };
 
 // API aliasing
+// for backwards compatibility with versions earlier than 1.2.0
 $.powerTip.showTip = $.powerTip.show;
 $.powerTip.closeTip = $.powerTip.hide;

@@ -3,7 +3,7 @@
  *
  * @fileoverview  TooltipController object that manages tips for an instance.
  * @link          https://stevenbenner.github.io/jquery-powertip/
- * @author        Steven Benner (http://stevenbenner.com/)
+ * @author        Steven Benner (https://stevenbenner.com/)
  * @requires      jQuery 1.7+
  */
 
@@ -142,7 +142,7 @@ function TooltipController(options) {
 		// attach hover events to the tooltip that will cancel a close request
 		// on mouseenter and start a new close request on mouseleave
 		// only hook these listeners if we're not in manual mode
-		if (options.mouseOnToPopup && !options.manual) {
+		if (options.mouseOnToPopup && !options.manual && $.inArray('mouseleave', options.closeEvents) > -1) {
 			tipElement.on('mouseenter' + EVENT_NAMESPACE, function tipMouseEnter() {
 				// check activeHover in case the mouse cursor entered the
 				// tooltip during the fadeOut and close cycle
@@ -216,7 +216,7 @@ function TooltipController(options) {
 	}
 
 	/**
-	 * Moves the tooltip to the users mouse cursor.
+	 * Moves the tooltip to the user's mouse cursor.
 	 * @private
 	 */
 	function positionTipOnCursor() {
@@ -261,7 +261,7 @@ function TooltipController(options) {
 				} else {
 					// if the tooltip has more than one collision then it is
 					// trapped in the corner and should be flipped to get it out
-					// of the users way
+					// of the user's way
 					coords.set('left', session.currentX - tipWidth - options.offset);
 					coords.set('top', session.currentY - tipHeight - options.offset);
 				}

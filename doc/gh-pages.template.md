@@ -3,12 +3,15 @@ layout: default
 description: "PowerTip is a jQuery plugin for creating smooth, modern tooltips."
 ---
 
-PowerTip features a very flexible design that is easy to customize, gives you a number of different ways to use the tooltips, has APIs for developers, and supports adding complex data to tooltips. It is being actively developed and maintained, and provides a very fluid user experience.
+PowerTip is a jQuery tooltip plugin with a smooth user experience that features a very flexible design which is easy to customize, gives you a variety of different ways to create tooltips, supports adding complex data to tooltips, and has a robust API for developers seeking greater integration with their web applications.
 
 <p id="buttons">
 <a href="https://github.com/stevenbenner/jquery-powertip/releases/download/v<%= pkg.version %>/jquery.powertip-<%= pkg.version %>.zip" class="button" id="download-link">Download v<%= pkg.version %></a>
 <span>Zip file with examples, CSS, and script.</span>
+<span>For older versions, see the <a href="https://github.com/stevenbenner/jquery-powertip/releases">releases page</a> on GitHub.</span>
 </p>
+
+## Examples
 
 Here are some basic examples of PowerTip in action. You can also fiddle with PowerTip on the official [JSFiddle demo](https://jsfiddle.net/stevenbenner/2baqv/).
 
